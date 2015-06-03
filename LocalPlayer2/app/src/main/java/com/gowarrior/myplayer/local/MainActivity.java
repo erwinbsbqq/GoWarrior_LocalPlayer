@@ -19,7 +19,7 @@ import java.util.Locale;
 
 public class MainActivity extends FragmentActivity {
 
-    //3.加上相关成员
+
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
     TabPageIndicator mIndicator;
@@ -37,13 +37,13 @@ public class MainActivity extends FragmentActivity {
     private void init(){
         setContentView(R.layout.local_file_browser); //1.重构，从onCreate中挪过来
 
-        //保持屏幕点亮的代码
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 
 
-        //4.实例化
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         mViewPager = (ViewPager)findViewById(R.id.pager);
@@ -54,7 +54,7 @@ public class MainActivity extends FragmentActivity {
 
     }
 
-    //2.TabPageIndicator定义一个定义Adapter（继承FragmentPagerAdapter）相关准备工作，
+
 
 
 
@@ -73,7 +73,7 @@ public class MainActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            //5.先建立一个默认的fragment让编译通过
+
             Fragment fragment = new BlankFragment();
 
 

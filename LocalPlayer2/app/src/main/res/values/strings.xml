@@ -10,6 +10,12 @@
     <string name="title_section3">Music</string>
     <string name="title_section4">Applications</string>
 
+    <string name="no_content">No File</string>
+
+    <string name="value_path">path</string>
+    <string name="value_bymenu">按【菜单】到分类</string>
+    <string name="value_zero">0 / 0</string>
+
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
