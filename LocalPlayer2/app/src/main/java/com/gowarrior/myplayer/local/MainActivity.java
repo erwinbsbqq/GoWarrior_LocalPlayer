@@ -1,40 +1,133 @@
 package com.gowarrior.myplayer.local;
 
-import android.app.Activity;
+
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.gowarrior.myplayer.R;
+import com.gowarrior.myplayer.common.TabPageIndicator;
+
+import java.util.Locale;
 
 
-public class MainActivity extends Activity {
+
+public class MainActivity extends FragmentActivity {
+
+    //3.加上相关成员
+    SectionsPagerAdapter mSectionsPagerAdapter;
+    ViewPager mViewPager;
+    TabPageIndicator mIndicator;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.local_file_browser);
+        init();
+
+
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+
+    private void init(){
+        setContentView(R.layout.local_file_browser); //1.重构，从onCreate中挪过来
+
+        //保持屏幕点亮的代码
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+
+
+        //4.实例化
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        mViewPager = (ViewPager)findViewById(R.id.pager);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        mIndicator = (TabPageIndicator) findViewById(R.id.indicator);
+        mIndicator.setViewPager(mViewPager);
+
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks OKon the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    //2.TabPageIndicator定义一个定义Adapter（继承FragmentPagerAdapter）相关准备工作，
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+
+
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm){
+            super(fm);
         }
 
-        return super.onOptionsItemSelected(item);
+        public Object instantiateItem(ViewGroup container, int position) {
+            //Log.v(LOGTAG, String.valueOf(container.getId()));
+            Fragment fragment = (Fragment) super.instantiateItem(container,
+                    position);
+            return fragment;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            //5.先建立一个默认的fragment让编译通过
+            Fragment fragment = new BlankFragment();
+
+
+
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return 4;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+
+            Locale l = Locale.getDefault();
+            switch (position) {
+                case 0:
+                    return getString(R.string.title_section1).toUpperCase(l);
+                case 1:
+                    return getString(R.string.title_section2).toUpperCase(l);
+                case 2:
+                    return getString(R.string.title_section3).toUpperCase(l);
+                case 3:
+                    return getString(R.string.title_section4).toUpperCase(l);
+            }
+            return super.getPageTitle(position);
+        }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
