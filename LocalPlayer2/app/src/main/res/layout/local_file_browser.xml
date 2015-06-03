@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/my_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/local_bg"
+    android:orientation="vertical"
+    >
+
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="83dp">
+    </android.support.v4.view.ViewPager>
+
+    <com.gowarrior.myplayer.common.TabPageIndicator
+        android:id="@+id/indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="83dp"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:scrollbars="none"
+        android:paddingTop="10dp"
+        android:focusable="true" />
+
+    <TextView
+        android:id="@+id/Version"
+        android:layout_toRightOf="@id/indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="50px"
+        android:layout_marginLeft="250px"
+        android:layout_marginTop="55px"
+        android:layout_centerHorizontal="true"
+        android:textSize="18px"
+        android:textColor="#3fffffff"
+        />
+
+
+</RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
