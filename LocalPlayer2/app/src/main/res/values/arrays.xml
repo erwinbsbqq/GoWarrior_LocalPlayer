@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="fileEndingVideo">
+        <item>.3g2</item>
+        <item>.3gp</item>
+        <item>.amv</item>
+        <item>.asf</item>
+        <item>.asx</item>
+        <item>.avi</item>
+        <item>.dat</item>
+        <item>.evo</item>
+        <item>.f4v</item>
+        <item>.flv</item>
+        <item>.ismv</item>
+        <item>.iso</item>
+        <item>.m2ts</item>
+        <item>.m4v</item>
+        <item>.mkv</item>
+        <item>.mov</item>
+        <item>.mp4</item>
+        <item>.mpeg</item>
+        <item>.mpg</item>
+        <item>.mts</item>
+        <item>.mtv</item>
+        <item>.ogm</item>
+        <item>.pmp</item>
+        <item>.rm</item>
+        <item>.rmvb</item>
+        <item>.tp</item>
+        <item>.trp</item>
+        <item>.ts</item>
+        <item>.vob</item>
+        <item>.webm</item>
+        <item>.wmv</item>
+    </array>
+    <array name="fileEndingImage">
+        <item>.bmp</item>
+        <item>.gif</item>
+        <item>.jpeg</item>
+        <item>.jpg</item>
+        <item>.png</item>
+    </array>
+    <array name="fileEndingAudio">
+        <item>.aac</item>
+        <item>.flac</item>
+        <item>.m4a</item>
+        <item>.mp3</item>
+        <item>.ogg</item>
+        <item>.wav</item>
+        <item>.wma</item>
+    </array>
+
+</resources>
