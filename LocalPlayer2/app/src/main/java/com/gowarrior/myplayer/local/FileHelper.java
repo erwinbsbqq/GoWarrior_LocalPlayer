@@ -2,10 +2,13 @@ package com.gowarrior.myplayer.local;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.gowarrior.myplayer.R;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,19 +51,19 @@ public class FileHelper {
 
     private  DirLoadingTask m_task = null;
 
-    //7 文件信息列表
+
     private  ArrayList<FileInfo> mDirEntries = new ArrayList<>();
     private  ArrayList<FileInfo> mAudioFile  = new ArrayList<>();
     private  ArrayList<FileInfo> mImageFile  = new ArrayList<>();
     private  ArrayList<FileInfo> mVideoFile  = new ArrayList<>();
     private  ArrayList<FileInfo> mApkFile    = new ArrayList<>();
 
-    //文件类型
+
     public enum FILETYPE {
         IMAGE, AUDIO, VIDEO, APK, DIR, UNKNOW;
     }
 
-    //类型排序
+
     public enum SORTTYPE {
         NAME,TIME;
     }
@@ -78,7 +81,7 @@ public class FileHelper {
         mNeedRefresh = refresh;
     }
 
-    //路径加载监听接口
+
     public  interface OnDirLoadedListener {
         void onDirLoaded(String Path);
     }
@@ -135,8 +138,12 @@ public class FileHelper {
             listenerReference = new WeakReference<>(listener);
         }
 
+        //1.back to here
         @Override
         protected Object doInBackground(Object... params) {
+
+
+            final OnDirLoadedListener listener = listenerReference.get();
 
             String path = (String) params[0];
 
@@ -146,9 +153,23 @@ public class FileHelper {
 
 
             mLock.lock();
-
+            m_task = this;
             try {
-                //3.2 todo something
+
+
+                if (path != mCurrentPath || mNeedRefresh ) {
+
+                    boolean isRootDir = isRootDir(path);
+                    if (isRootDir) {
+                        if (loadRootDirFiles()){
+                            mCurrentPath = path;
+                        }
+                    } else {
+                        if (loadFiles(path)) {
+                            mCurrentPath = path;
+                        }
+                    }
+                }
 
 
             }
@@ -157,18 +178,78 @@ public class FileHelper {
                 mLock.unlock();
             }
 
-            return null;
+            return params[0];
         }
 
+        @Override
+        protected void onPostExecute(Object o) {
+            if (o == null) {
+                return;
+            }
+            String path = (String) o;
+            if (path == null || mLoadingPath == null || path.isEmpty()) {
+                return;
+            }
+
+            if (!isCancelled()) {
+                final OnDirLoadedListener listener = listenerReference.get();
+                listener.onDirLoaded(path);
+                mNeedRefresh = false;
+            }
+        }
+
+        @Override
+        protected void onCancelled(Object o) {
+            super.onCancelled(o);
+        }
+    }
+
+    private boolean loadRootDirFiles() {
 
 
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("/proc/mounts"));
+            String line;
 
+            while ((line = br.readLine()) != null) {
+                if (line.contains("secure") || line.contains("asec")) {
+                    continue;
+                }
+                if (line.contains("vfat") || line.contains("ntfs") || line.contains("fuseblk")) {
+                    String [] columns = line.split(" ");
+                    if (columns != null && columns.length > 1) {
+                        if (columns[1].contains("sd") ||columns[1].contains("usb")) {
 
+                            File file = new File(columns[1]);
+                            if (file.isDirectory()) {
+                                FileInfo fileInfo = new FileInfo();
+                                fileInfo.name = file.getName();
+                                if (fileInfo.name.startsWith(".")) {
+                                    continue;
+                                }
+                                fileInfo.path  = file.getAbsolutePath();
+                                fileInfo.isDir = file.isDirectory();
+                                fileInfo.friendlyName = getStorageFriendlyName(file);
+                                mDirEntries.add(fileInfo);
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            br.close();
+
+        } catch (Exception e) {
+            Log.v(LOGTAG, "Read /proc/mounts fail!");
+            e.printStackTrace();
+        }
+
+        sortDir(SORTTYPE.NAME);
+        return true;
 
     }
 
-
-//6. 硬编码，实现有点不太好
 
     public static String getRootPath() {
         return "/storage";
@@ -219,7 +300,7 @@ public class FileHelper {
         }
     }
 
-    //7 先建立FileInfo类文件
+
 
     public ArrayList<FileInfo>getDirInfo(String path, FILETYPE filetype) {
         if (path.equals(mCurrentPath)) {
@@ -290,7 +371,7 @@ public class FileHelper {
     }
 
 
-    //fileInfo 数据的填充
+
     private void fillDirInfoList(File[] fileList) {
         if (fileList == null) {
             return;
@@ -300,33 +381,33 @@ public class FileHelper {
             isRoot = isRootDir(fileList[0].getAbsolutePath());
         }
 
-        for (int i = 0; i < fileList.length; i++) {
-            File file = fileList[i];
-            if (!file.exists()){
+        //换成foreach方式
+        for (File file : fileList) {
+            if (!file.exists()) {
                 break;
             }
 
             FileInfo fileInfo = new FileInfo();
             fileInfo.name = file.getName();
-            if (fileInfo.name.startsWith(".")){
-                continue;;
+            if (fileInfo.name.startsWith(".")) {
+                continue;
             }
-            if (isRoot){
+            if (isRoot) {
                 fileInfo.friendlyName = getStorageFriendlyName(file);
             } else {
                 fileInfo.friendlyName = fileInfo.name;
             }
 
-            fileInfo.path  = file.getAbsolutePath();
+            fileInfo.path = file.getAbsolutePath();
             fileInfo.isDir = file.isDirectory();
 
-            fileInfo.filetype = getFileType(fileList[i]);
+            fileInfo.filetype = getFileType(file);
 
 
         }
     }
 
-    //内部方法，用private,显示根目录为“我的U盘-1”之类
+    //显示时调用
     private String getStorageFriendlyName(File file) {
         String name = new String("");
         if (file != null) {
@@ -343,6 +424,23 @@ public class FileHelper {
         return  name;
     }
 
+    // 显示时调用
+    private String getFriendlyPath(String currentPath) {
+        String path = null;
+
+        File file = getcurrentstorageFile();
+
+        //todo
+
+        return "";
+    }
+
+    private File getcurrentstorageFile() {
+        //todo
+        return null;
+    }
+
+
     private FILETYPE getFileType(File file) {
         FILETYPE fileType = FILETYPE.UNKNOW;
 
@@ -356,7 +454,7 @@ public class FileHelper {
             fileType = FILETYPE.DIR;
         } else if (name.toLowerCase().endsWith(".apk")) {
             fileType = FILETYPE.APK;
-            //mAudioSuffixesinitStoragePath等在获取相关值
+
         } else if (matchFileType(name, mAudioSuffixes)) {
             fileType = FILETYPE.AUDIO;
         } else if (matchFileType(name, mImageSuffixes)) {
@@ -368,16 +466,19 @@ public class FileHelper {
         return  fileType;
     }
 
-    //在指定的String数组里找到对应的文件后缀名
+
     private boolean matchFileType(String name, String[] suffixes) {
         boolean match = false;
+
         if (name == null || name.isEmpty()) {
             return  match;
         }
-        //为了好比较，先全部转成小写
+
         String lowerName = name.toLowerCase();
-        for (int i = 0; i < suffixes.length; i++) {
-            if (lowerName.endsWith(suffixes[i])) {
+
+        //换成foreach方式
+        for (String element : suffixes) {
+            if (lowerName.endsWith(element)) {
                 match = true;
                 break;
             }
@@ -385,6 +486,9 @@ public class FileHelper {
 
         return match;
     }
+
+
+
 
 
 
