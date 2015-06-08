@@ -17,7 +17,7 @@ import java.util.Locale;
 
 
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity  implements FragmentListener   {
 
 
     SectionsPagerAdapter mSectionsPagerAdapter;
@@ -29,6 +29,8 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init();
+
+        //mViewPager.requestFocus();
 
 
     }
@@ -54,8 +56,11 @@ public class MainActivity extends FragmentActivity {
 
     }
 
+    @Override
+    public void focusTabs() {
+        mIndicator.focusOnTabs();
 
-
+    }
 
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -74,7 +79,7 @@ public class MainActivity extends FragmentActivity {
         @Override
         public Fragment getItem(int position) {
 
-            Fragment fragment = new BlankFragment();
+            Fragment fragment = new GridFragment();
 
 
 

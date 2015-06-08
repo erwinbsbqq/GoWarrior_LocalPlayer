@@ -83,7 +83,7 @@ public class FileHelper {
 
 
     public  interface OnDirLoadedListener {
-        void onDirLoaded(String Path);
+        void onDirLoaded(String path);
     }
 
 
@@ -424,8 +424,8 @@ public class FileHelper {
         return  name;
     }
 
-    // 显示时调用
-    private String getFriendlyPath(String currentPath) {
+    // 显示时调用,改成public
+    public String getFriendlyPath(String currentPath) {
         String path = null;
 
         File file = getcurrentstorageFile();
