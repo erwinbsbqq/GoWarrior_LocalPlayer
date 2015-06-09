@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,9 @@ import java.util.ArrayList;
 public class GridFragment extends Fragment implements OnDirLoadedListener {
 
     public final static String LOGTAG = "GridFragment";
+    public static final String ARG_SECTION_NUMBER = "section_number";
+
+    private int mSectionNumber;
 
     private GridView gridView;
     private TextView emptyView;
@@ -70,6 +74,7 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mSectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
         Context context = getActivity();
         View rootView;
 
@@ -77,22 +82,60 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
 
         mImageWorker = new ImageWorker(context);
 
+        switch (mSectionNumber) {
+            case 0:
+                mFileType = FileHelper.FILETYPE.IMAGE;
+                rootView=inflater.inflate(R.layout.fragment_blank, container, false);
+                break;
+            case 1:
+                mFileType = FileHelper.FILETYPE.VIDEO;
+                rootView=inflater.inflate(R.layout.fragment_blank, container, false);
+                break;
+            case 2:
+                mFileType = FileHelper.FILETYPE.AUDIO;
+                rootView=inflater.inflate(R.layout.fragment_blank, container, false);
+                break;
+            case 3:
+                mFileType = FileHelper.FILETYPE.APK;
+                rootView=inflater.inflate(R.layout.fragment_blank, container, false);
+                break;
+            default:
+                return null;
+        }
 
-        rootView=inflater.inflate(R.layout.fragment_blank, container, false);
 
-        gridView  = (GridView)rootView.findViewById(R.id.local_movie_gridView);
+
+
+        gridView  = (GridView)rootView.findViewById(R.id.local_filebrowser_gridView);
         emptyView = (TextView)rootView.findViewById(R.id.empty_view);
         mCurrentPathView = (TextView)rootView.findViewById(R.id.current_dir);
         mTipView  = (TextView)rootView.findViewById(R.id.tip_menu_key);
 
         gridView.setEmptyView(emptyView);
 
+        //debug
+        gridView.getCount();
+
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                //TODO
+                Object obj = gridView.getItemAtPosition(position);
+                if (obj == null) {
+                    Log.d(LOGTAG,"obj is null");
+                    return;
+                }
+                FileInfo fileInfo = (FileInfo) obj;
+                if (fileInfo.isDir) {
+                    mIsLoading = true;
+                    mTipView.setText(R.string.loading_dir);
+                    mChildName = "";
+
+                    mFileHelper.loadDir(fileInfo.path, GridFragment.this);
+                }
+
+
 
             }
         });
@@ -155,11 +198,13 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
                         return true;
                     case KeyEvent.KEYCODE_DPAD_UP:
                         if (gridView.getSelectedItemPosition() < gridView.getNumColumns()) {
-                            if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                                if (!mIsLoading) {
-                                    mFragmentListener.focusTabs();
+
+                                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                                    if (!mIsLoading) {
+                                        mFragmentListener.focusTabs();
+                                    }
                                 }
-                            }
+
                             return true;
                         } else {
                             return false;
@@ -167,23 +212,28 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
                     case KeyEvent.KEYCODE_DPAD_DOWN:
                         return false;
                     case KeyEvent.KEYCODE_DPAD_LEFT:
-                        if (event.getAction() == KeyEvent.ACTION_UP) {
+                        if (event.getAction() == KeyEvent.ACTION_DOWN) {
                             return true;
                         }
                         gridView.onKeyDown(keyCode, event);
 
                         if (gridView.getSelectedItemPosition() > 0 && gridView.getCount() > 1) {
+                            Log.d(LOGTAG,"gridView.setselection before left possion is" + gridView.getSelectedItemPosition()) ;
                             gridView.setSelection(gridView.getSelectedItemPosition() - 1);
+                            Log.d(LOGTAG,"gridView.setselection left possion is" + (gridView.getSelectedItemPosition() -1)) ;
                         }
                         return true;
 
                     case KeyEvent.KEYCODE_DPAD_RIGHT:
-                        if (event.getAction() == KeyEvent.ACTION_UP) {
+
+                        //换成KeyEvent.ACTION_UP会跳格
+                        if (event.getAction() == KeyEvent.ACTION_DOWN) {
                             return true;
                         }
                         gridView.onKeyDown(keyCode,event);
                         if ((gridView.getSelectedItemPosition() < (gridView.getCount() - 1)) && (gridView.getCount() > 1)) {
                             gridView.setSelection(gridView.getSelectedItemPosition() + 1);
+                            Log.d(LOGTAG, "gridView.setselection possion right is" + (gridView.getSelectedItemPosition()+1) ) ;
                         }
                         return true;
                     default:
@@ -263,7 +313,7 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
             getActivity().unregisterReceiver(mPlugReceiver);
             mPlugReceiver = null;
         }
-
+        Log.d(LOGTAG, "destroy gridfragment");
         super.onDestroy();
     }
 
@@ -361,12 +411,17 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
 
         ArrayList<FileInfo> infoList = mFileHelper.getDirInfo(path,mFileType);
 
+        if (infoList == null){
+            return;
+        }
+
         FileListAdapter fileListAdapter = new FileListAdapter(getActivity(), mFileHelper.getCurrentPath());
         gridView.setAdapter(fileListAdapter);
 
         if (mChildName != null && !mChildName.isEmpty()) {
 
             for (int i = 0; i < infoList.size(); i++) {
+                Log.d(LOGTAG,"infoList size is "+ infoList.size());
                 FileInfo fileInfo = infoList.get(i);
                 if (fileInfo.isDir) {
                     if (mChildName.equals(fileInfo.name)) {
@@ -403,6 +458,7 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
             if (fileInfos == null) {
                 return 0;
             }
+            Log.d(LOGTAG,"the count is " + fileInfos.size());
             return fileInfos.size();
         }
 
@@ -446,6 +502,15 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
                         mImageWorker.loadImage(fileInfo.path,
                                 ImageWorker.FILETYPE.VIDEO, imageView);
                         break;
+                    //加上音视频文件的图标展示
+                    case AUDIO:
+                        imageView.setImageResource(R.drawable.local_audio);
+                        break;
+                    case APK:
+                        imageView.setImageResource(R.drawable.local_apk);
+                        mImageWorker.loadImage(fileInfo.path,
+                                ImageWorker.FILETYPE.APK, imageView);
+                        break;
                     default:
                         break;
                 }
@@ -453,6 +518,9 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
 
             return convertView;
         }
+
+
+
     }
 
 

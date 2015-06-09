@@ -143,11 +143,12 @@ public class FileHelper {
         protected Object doInBackground(Object... params) {
 
 
-            final OnDirLoadedListener listener = listenerReference.get();
+            //final OnDirLoadedListener listener = listenerReference.get();
 
             String path = (String) params[0];
 
             if (path == null || path.isEmpty()) {
+                Log.d(LOGTAG,"doInBackgroud, path is empty");
                 return  null;
             }
 
@@ -162,10 +163,12 @@ public class FileHelper {
                     boolean isRootDir = isRootDir(path);
                     if (isRootDir) {
                         if (loadRootDirFiles()){
+                            Log.d(LOGTAG,"loadRootDirFiles");
                             mCurrentPath = path;
                         }
                     } else {
                         if (loadFiles(path)) {
+                            Log.d(LOGTAG, "loadFiles");
                             mCurrentPath = path;
                         }
                     }
@@ -205,6 +208,12 @@ public class FileHelper {
     }
 
     private boolean loadRootDirFiles() {
+
+        mDirEntries = new ArrayList<>();
+        mAudioFile = new ArrayList<>();
+        mImageFile = new ArrayList<>();
+        mVideoFile = new ArrayList<>();
+        mApkFile = new ArrayList<>();
 
 
         try {
@@ -268,11 +277,13 @@ public class FileHelper {
     public void loadDir(String path, OnDirLoadedListener listener) {
 
         if (path == null){
+            Log.d(LOGTAG,"path is null");
             return;
         }
 
         File file = new File(path);
         if (file == null ||! file.isDirectory()) {
+            Log.d(LOGTAG,"file is null");
             return;
         }
 
@@ -290,7 +301,9 @@ public class FileHelper {
     public void loadRootDir(String path, OnDirLoadedListener listener) {
         mLoadingPath = path;
         DirLoadingTask task = new DirLoadingTask(listener);
+
         task.executeOnExecutor(mExecutorService, path);
+
 
     }
 
@@ -353,6 +366,7 @@ public class FileHelper {
 
     private  boolean loadFiles(String path) {
         if(path == null ||path.isEmpty()) {
+            Log.d(LOGTAG,"loadFiles path is empty");
             return  false;
         }
 
@@ -361,7 +375,16 @@ public class FileHelper {
             return false;
         }
 
+
+
+        mDirEntries = new ArrayList<>();
+        mAudioFile = new ArrayList<>();
+        mImageFile = new ArrayList<>();
+        mVideoFile = new ArrayList<>();
+        mApkFile = new ArrayList<>();
+
         File [] fileList = dir.listFiles();
+        Log.d(LOGTAG,"loadfiles, filelist length is " + fileList.length);
 
         fillDirInfoList(fileList);
         sortDir(SORTTYPE.NAME);
@@ -402,6 +425,25 @@ public class FileHelper {
             fileInfo.isDir = file.isDirectory();
 
             fileInfo.filetype = getFileType(file);
+            switch (fileInfo.filetype) {
+                case DIR:
+                    mDirEntries.add(fileInfo);
+                    continue;
+                case APK:
+                    mApkFile.add(fileInfo);
+                    continue;
+                case AUDIO:
+                    mAudioFile.add(fileInfo);
+                    continue;
+                case IMAGE:
+                    mImageFile.add(fileInfo);
+                    continue;
+                case VIDEO:
+                    mVideoFile.add(fileInfo);
+                    continue;
+                default:
+                    continue;
+            }
 
 
         }
@@ -427,17 +469,47 @@ public class FileHelper {
     // 显示时调用,改成public
     public String getFriendlyPath(String currentPath) {
         String path = null;
+        try {
+            File file = getCurrentStorageFile();
+            if (file != null) {
+                String storagePath = file.getAbsolutePath();
+                if (currentPath.startsWith(currentPath)) {
+                    path = currentPath.substring(storagePath.length());
+                    path = getStorageFriendlyName(file) + path;
+                } else {
+                    path = mCurrentPath;
+                }
+            }
+        } catch (Exception e) {
+            Log.e(LOGTAG, e.getMessage());
+            return "";
+        }
 
-        File file = getcurrentstorageFile();
-
-        //todo
-
-        return "";
+        if (path != null) {
+            return path;
+        } else {
+            return "";
+        }
     }
 
-    private File getcurrentstorageFile() {
-        //todo
-        return null;
+    //搬过来
+    private File getCurrentStorageFile() {
+        try {
+            int pos = 0;
+            for (int i = 0; i < 2; i++) {
+                pos = mCurrentPath.indexOf('/', pos + 1);
+            }
+            File file;
+            if (pos > 0) {
+                file = new File(mCurrentPath.substring(0, pos));
+            } else {
+                file = new File(mCurrentPath);
+            }
+            return file;
+        } catch (Exception e) {
+            Log.e(LOGTAG, e.getMessage());
+            return null;
+        }
     }
 
 

@@ -64,7 +64,7 @@
             android:visibility="gone" />
 
         <GridView
-            android:id="@+id/local_movie_gridView"
+            android:id="@+id/local_filebrowser_gridView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
