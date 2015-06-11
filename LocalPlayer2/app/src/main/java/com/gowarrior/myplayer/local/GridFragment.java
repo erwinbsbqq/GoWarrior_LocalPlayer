@@ -55,6 +55,8 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
 
     private BroadcastReceiver mPlugReceiver;
 
+    private TextView mPageTextView;
+
     public GridFragment() {
 
     }
@@ -110,6 +112,7 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
         emptyView = (TextView)rootView.findViewById(R.id.empty_view);
         mCurrentPathView = (TextView)rootView.findViewById(R.id.current_dir);
         mTipView  = (TextView)rootView.findViewById(R.id.tip_menu_key);
+        mPageTextView = (TextView) rootView.findViewById(R.id.page_number);
 
         gridView.setEmptyView(emptyView);
 
@@ -269,6 +272,7 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
 
                     mChildName = currentFile.getName();
                     mFileHelper.loadDir(currentFile.getParentFile().getAbsolutePath(), GridFragment.this);
+
                     gridView.requestFocus();
                 return  true;
                 }else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
@@ -365,13 +369,20 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
                         mTipView.setText(R.string.loading_dir);
                         mFileHelper.setmNeedRefresh(true);
                         mFileHelper.loadRootDir(FileHelper.getRootPath(),GridFragment.this);
+
+                        Log.d(LOGTAG,"receive mount");
                     }
                 } else if (action.equals(Intent.ACTION_MEDIA_REMOVED) ||action.equals(intent.ACTION_MEDIA_BAD_REMOVAL)) {
+                        //回收文件句柄，防止在加载预览图后，不释放文件导致插拔硬盘程序异常退出
+                        System.gc();
                     String currentPath = currentFile.getAbsolutePath();
                     if (currentPath.startsWith(path) || FileHelper.isRootDir(currentPath)) {
                         mIsLoading = true;
                         mTipView.setText(R.string.loading_dir);
+                        //加上下面这句判断状态
+                        mFileHelper.setmNeedRefresh(true);
                         mFileHelper.loadRootDir(FileHelper.getRootPath(), GridFragment.this);
+                        Log.d(LOGTAG, "receive pop");
                     }
                 }
             }
@@ -392,8 +403,14 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
     }
 
     private void updatePageNumber() {
-        //TODO
-
+        if (mPageTextView == null) {
+            return;
+        }
+        if (gridView.getCount() > 0 && gridView.isFocused()){
+            mPageTextView.setText(String.valueOf(gridView.getSelectedItemPosition() + 1) + " / " + gridView.getCount());
+        }else {
+            mPageTextView.setText("0 / " + gridView.getCount());
+        }
     }
 
     @Override
