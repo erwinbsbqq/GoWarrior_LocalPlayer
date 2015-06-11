@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/playbar_title"
+        android:maxWidth="690px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="33px"
+        android:layout_marginTop="7px"
+        android:text="@string/value_source_name"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:textSize="30px" />
+
+    <TextView
+        android:id="@+id/playbar_time"
+        android:maxWidth="234px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/playbar_title"
+        android:layout_alignBottom="@id/playbar_title"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="33px"
+        android:layout_gravity="right|center_vertical"
+        android:textAlignment="viewEnd"
+        android:text="@string/value_timefmt"
+        android:textSize="26px" />
+
+    <SeekBar
+        android:id="@+id/playbar_slider"
+        android:layout_width="940px"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/playbar_title"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="25px"
+        android:layout_marginRight="25px"
+        android:progressDrawable="@drawable/player_slider"
+        android:thumb="@drawable/player_slider_thumb" />
+
+</RelativeLayout>
