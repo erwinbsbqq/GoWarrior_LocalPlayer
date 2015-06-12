@@ -19,7 +19,7 @@ import java.util.Locale;
 
 
 
-public class MainActivity extends FragmentActivity  implements FragmentListener   {
+public class FileBrowser extends FragmentActivity  implements FragmentListener   {
 
 
     SectionsPagerAdapter mSectionsPagerAdapter;
@@ -29,7 +29,7 @@ public class MainActivity extends FragmentActivity  implements FragmentListener 
 
     //private static FileHelper.SORTTYPE mSorttype = FileHelper.SORTTYPE.NAME;
 
-    private FileHelper mFileHelper;
+
 
 
     @Override
@@ -42,12 +42,13 @@ public class MainActivity extends FragmentActivity  implements FragmentListener 
         System.gc();
 
 
+
     }
 
 
     private void init(){
+         FileHelper mFileHelper=  FileHelper.getInstance(this);
 
-        mFileHelper =  FileHelper.getInstance(this);
         mFileHelper.init();
 
         setContentView(R.layout.local_file_browser); //1.重构，从onCreate中挪过来
@@ -109,9 +110,8 @@ public class MainActivity extends FragmentActivity  implements FragmentListener 
 
         public Object instantiateItem(ViewGroup container, int position) {
             //Log.v(LOGTAG, String.valueOf(container.getId()));
-            Fragment fragment = (Fragment) super.instantiateItem(container,
-                    position);
-            return fragment;
+            return super.instantiateItem(container, position);
+
         }
 
         @Override

@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v4.util.LruCache;
 import android.text.format.Time;
 import android.util.Log;
@@ -55,10 +56,7 @@ public class LocalImagePlayer extends Activity {
 
     private final int THRESHOLD_SHOW_TIPS = 5000;
     private final int THRESHOLD_SHOW_LOADING = 1000;
-    private final int MAX_UNSCALE_WIDTH = 2048;
-    private final int MAX_UNSCALE_HEIGHT = 2048;
-    private final int MAX_SUPPORTED_WIDTH = 4096;
-    private final int MAX_SUPPORTED_HEIGHT = 4096;
+
 
     private final int SKIP_MODE_PREVIOUS = -1;
     private final int SKIP_MODE_CURRENT = 0;
@@ -164,7 +162,7 @@ public class LocalImagePlayer extends Activity {
         }
         Log.v(LOGTAG, "onCreate: mPlayIndex=" + mPlayIndex);
 
-        mExecutorService = (ExecutorService) Executors.newFixedThreadPool(1);
+        mExecutorService =  Executors.newFixedThreadPool(1);
 
         mDegrees = new int[mList.size()];
 
@@ -214,7 +212,7 @@ public class LocalImagePlayer extends Activity {
         public ImageCache(int maxSize) {
             super(maxSize);
         }
-    };
+    }
 
     private void initReceiver() {
         if (mPlugReceiver != null) {
@@ -265,7 +263,7 @@ public class LocalImagePlayer extends Activity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        // TODO Auto-generated method stub
+
         if (event.getAction() == KeyEvent.ACTION_DOWN
                 && true == isOptionSettingShowing()) {
             Log.i(LOGTAG, "receive onkey down, reset time out");
@@ -302,7 +300,7 @@ public class LocalImagePlayer extends Activity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         Log.v(LOGTAG, "onKeyDown: keyCode=" + keyCode);
 
         mTipView.setVisibility(View.INVISIBLE);
@@ -338,7 +336,7 @@ public class LocalImagePlayer extends Activity {
                 break;
 
             case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (inDecoding == false) {
+                if (!inDecoding ) {
                     Log.d(LOGTAG, "KEYCODE_DPAD_LEFT --->>!!");
                     switchImage(SKIP_MODE_PREVIOUS);
                 } else {
@@ -347,7 +345,7 @@ public class LocalImagePlayer extends Activity {
                 break;
 
             case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (inDecoding == false) {
+                if (!inDecoding ) {
                     Log.d(LOGTAG, "KEYCODE_DPAD_RIGHT --->>!!");
                     switchImage(SKIP_MODE_NEXT);
                 } else {

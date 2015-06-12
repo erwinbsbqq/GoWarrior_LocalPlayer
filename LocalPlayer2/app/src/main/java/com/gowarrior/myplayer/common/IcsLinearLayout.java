@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -59,7 +60,7 @@ class IcsLinearLayout extends LinearLayout {
     }
 
     @Override
-    protected void measureChildWithMargins(View child, int parentWidthMeasureSpec, int widthUsed, int parentHeightMeasureSpec, int heightUsed) {
+    protected void measureChildWithMargins(@NonNull View child, int parentWidthMeasureSpec, int widthUsed, int parentHeightMeasureSpec, int heightUsed) {
         final int index = indexOfChild(child);
         final int orientation = getOrientation();
         final LayoutParams params = (LayoutParams) child.getLayoutParams();
@@ -114,7 +115,7 @@ class IcsLinearLayout extends LinearLayout {
 
         if (hasDividerBeforeChildAt(count)) {
             final View child = getChildAt(count - 1);
-            int bottom = 0;
+            int bottom ;
             if (child == null) {
                 bottom = getHeight() - getPaddingBottom() - mDividerHeight;
             } else {
@@ -141,7 +142,7 @@ class IcsLinearLayout extends LinearLayout {
 
         if (hasDividerBeforeChildAt(count)) {
             final View child = getChildAt(count - 1);
-            int right = 0;
+            int right ;
             if (child == null) {
                 right = getWidth() - getPaddingRight() - mDividerWidth;
             } else {

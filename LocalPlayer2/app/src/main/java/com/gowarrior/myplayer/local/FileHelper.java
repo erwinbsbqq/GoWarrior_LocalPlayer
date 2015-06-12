@@ -17,9 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Created by jerry.xiong on 2015/6/3.
- */
+
 public class FileHelper {
 
     public final static String LOGTAG = "FileHelper";
@@ -63,13 +61,13 @@ public class FileHelper {
     public ArrayList<String> playlist;
 
     public enum FILETYPE {
-        IMAGE, AUDIO, VIDEO, APK, DIR, UNKNOW;
+        IMAGE, AUDIO, VIDEO, APK, DIR, UNKNOW
     }
 
 
-    public enum SORTTYPE {
-        NAME,TIME;
-    }
+//    public enum SORTTYPE {
+//        NAME,TIME
+//    }
 
 
     public String getCurrentPath() {
@@ -161,7 +159,7 @@ public class FileHelper {
             try {
 
 
-                if (path != mCurrentPath || mNeedRefresh ) {
+                if (!path.equals(mCurrentPath)  || mNeedRefresh ) {
 
                     boolean isRootDir = isRootDir(path);
                     if (isRootDir) {
@@ -195,7 +193,7 @@ public class FileHelper {
                 return;
             }
             String path = (String) o;
-            if (path == null || mLoadingPath == null || path.isEmpty()) {
+            if (mLoadingPath == null || path.isEmpty()) {
                 return;
             }
 
@@ -231,7 +229,7 @@ public class FileHelper {
                 }
                 if (line.contains("vfat") || line.contains("ntfs") || line.contains("fuseblk")) {
                     String [] columns = line.split(" ");
-                    if (columns != null && columns.length > 1) {
+                    if (columns.length > 1) {
                         if (columns[1].contains("sd") ||columns[1].contains("usb")) {
 
                             File file = new File(columns[1]);
@@ -259,7 +257,7 @@ public class FileHelper {
             e.printStackTrace();
         }
 
-        sortDir(SORTTYPE.NAME);
+        sortDir();
         return true;
 
     }
@@ -287,7 +285,7 @@ public class FileHelper {
         }
 
         File file = new File(path);
-        if (file == null ||! file.isDirectory()) {
+        if (! file.isDirectory()) {
             Log.d(LOGTAG,"file is null");
             return;
         }
@@ -350,7 +348,7 @@ public class FileHelper {
 
 
 
-    public void sortDir(SORTTYPE sortType) {
+    public void sortDir() {
         Collections.sort(mDirEntries, new FileInfoNameComparator());
         Collections.sort(mApkFile, new FileInfoNameComparator());
         Collections.sort(mAudioFile, new FileInfoNameComparator());
@@ -392,7 +390,7 @@ public class FileHelper {
         Log.d(LOGTAG,"loadfiles, filelist length is " + fileList.length);
 
         fillDirInfoList(fileList);
-        sortDir(SORTTYPE.NAME);
+        sortDir();
 
 
         return true;
@@ -447,7 +445,7 @@ public class FileHelper {
                     mVideoFile.add(fileInfo);
                     continue;
                 default:
-                    continue;
+                    break;
             }
 
 
@@ -456,19 +454,23 @@ public class FileHelper {
 
     //显示时调用
     private String getStorageFriendlyName(File file) {
-        String name = new String("");
+
         if (file != null) {
-            name = file.getName().toLowerCase();
-        }
-        if (name.contains("usb")) {
-            name = mFriendlyNameUsb + name.replace("usb", "");
-        }else if (name.contains("sdcard")) {
-            name = mFriendlyNameSd + name;
-        }else if (name.contains("sd")) {
-            name = mFriendlyNameHd + name;
+            String name = file.getName().toLowerCase();
+            if (name.contains("usb")) {
+                name = mFriendlyNameUsb + name.replace("usb", "");
+            }else if (name.contains("sdcard")) {
+                name = mFriendlyNameSd + name;
+            }else if (name.contains("sd")) {
+                name = mFriendlyNameHd + name;
+            }
+            return  name;
+        }else{
+            return null;
         }
 
-        return  name;
+
+
     }
 
     // 显示时调用,改成public
@@ -548,7 +550,7 @@ public class FileHelper {
         boolean match = false;
 
         if (name == null || name.isEmpty()) {
-            return  match;
+            return  false;
         }
 
         String lowerName = name.toLowerCase();

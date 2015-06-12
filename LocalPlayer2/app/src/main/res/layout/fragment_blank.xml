@@ -76,7 +76,8 @@
             android:numColumns="auto_fit"
             android:scrollbars="none"
             android:stretchMode="spacingWidthUniform"
-            android:verticalSpacing="34dp" >
+            android:verticalSpacing="34dp"
+            >
         </GridView>
     </FrameLayout>
     

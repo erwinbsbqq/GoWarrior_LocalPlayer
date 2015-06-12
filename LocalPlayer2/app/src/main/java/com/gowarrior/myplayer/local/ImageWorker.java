@@ -40,7 +40,7 @@ public class ImageWorker {
 	private ExecutorService mExecutorService = null;
 
 	public enum FILETYPE {
-		IMAGE, VIDEO, APK;        
+		IMAGE, VIDEO, APK
 	}
 
 	public ImageWorker(Context context) {

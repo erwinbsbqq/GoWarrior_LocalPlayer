@@ -35,7 +35,7 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
     public final static String LOGTAG = "GridFragment";
     public static final String ARG_SECTION_NUMBER = "section_number";
 
-    private int mSectionNumber;
+
 
     private GridView gridView;
     private TextView emptyView;
@@ -76,7 +76,8 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mSectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
+
+        int mSectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
         Context context = getActivity();
         View rootView;
 
@@ -374,7 +375,7 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
 
                         Log.d(LOGTAG,"receive mount");
                     }
-                } else if (action.equals(Intent.ACTION_MEDIA_REMOVED) ||action.equals(intent.ACTION_MEDIA_BAD_REMOVAL)) {
+                } else if (action.equals(Intent.ACTION_MEDIA_REMOVED) ||action.equals(Intent.ACTION_MEDIA_BAD_REMOVAL)) {
                         //回收文件句柄，防止在加载预览图后，不释放文件导致插拔硬盘程序异常退出
                         System.gc();
                     String currentPath = currentFile.getAbsolutePath();
@@ -499,7 +500,7 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
             mInflater = LayoutInflater.from(mContext);
             if (convertView == null) {
 
-                convertView = mInflater.inflate(R.layout.local_grid_item,null);
+                convertView = mInflater.inflate(R.layout.local_grid_item,parent,false);
             }
             ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView1);
             TextView  textView  = (TextView)  convertView.findViewById(R.id.item_label);
@@ -565,7 +566,7 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
             playlist.add(fileInfo.name);
         }
 
-        Class<?> cls = null;
+        Class<?> cls ;
         switch (mFileType) {
             case IMAGE:
                 cls = LocalImagePlayer.class;
