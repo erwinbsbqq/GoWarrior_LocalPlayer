@@ -52,12 +52,15 @@ public class FileHelper {
     private  DirLoadingTask m_task = null;
 
 
-    private  ArrayList<FileInfo> mDirEntries = new ArrayList<>();
-    private  ArrayList<FileInfo> mAudioFile  = new ArrayList<>();
-    private  ArrayList<FileInfo> mImageFile  = new ArrayList<>();
-    private  ArrayList<FileInfo> mVideoFile  = new ArrayList<>();
-    private  ArrayList<FileInfo> mApkFile    = new ArrayList<>();
+    private  ArrayList<FileInfo> mDirEntries = new ArrayList<FileInfo>();
+    private  ArrayList<FileInfo> mAudioFile  = new ArrayList<FileInfo>();
+    private  ArrayList<FileInfo> mImageFile  = new ArrayList<FileInfo>();
+    private  ArrayList<FileInfo> mVideoFile  = new ArrayList<FileInfo>();
+    private  ArrayList<FileInfo> mApkFile    = new ArrayList<FileInfo>();
 
+
+    //TODO
+    public ArrayList<String> playlist;
 
     public enum FILETYPE {
         IMAGE, AUDIO, VIDEO, APK, DIR, UNKNOW;
@@ -135,7 +138,7 @@ public class FileHelper {
     class DirLoadingTask extends AsyncTask<Object,Void,Object> {
         private final WeakReference<OnDirLoadedListener> listenerReference;
         public DirLoadingTask(OnDirLoadedListener listener) {
-            listenerReference = new WeakReference<>(listener);
+            listenerReference = new WeakReference<OnDirLoadedListener>(listener);
         }
 
         //1.back to here
@@ -184,6 +187,8 @@ public class FileHelper {
             return params[0];
         }
 
+
+
         @Override
         protected void onPostExecute(Object o) {
             if (o == null) {
@@ -209,11 +214,11 @@ public class FileHelper {
 
     private boolean loadRootDirFiles() {
 
-        mDirEntries = new ArrayList<>();
-        mAudioFile = new ArrayList<>();
-        mImageFile = new ArrayList<>();
-        mVideoFile = new ArrayList<>();
-        mApkFile = new ArrayList<>();
+        mDirEntries = new ArrayList<FileInfo>();
+        mAudioFile = new ArrayList<FileInfo>();
+        mImageFile = new ArrayList<FileInfo>();
+        mVideoFile = new ArrayList<FileInfo>();
+        mApkFile = new ArrayList<FileInfo>();
 
 
         try {
@@ -317,7 +322,7 @@ public class FileHelper {
 
     public ArrayList<FileInfo>getDirInfo(String path, FILETYPE filetype) {
         if (path.equals(mCurrentPath)) {
-            ArrayList<FileInfo> infoList = new ArrayList<>();
+            ArrayList<FileInfo> infoList = new ArrayList<FileInfo>();
             infoList.addAll(mDirEntries);
 
             switch (filetype) {
@@ -377,11 +382,11 @@ public class FileHelper {
 
 
 
-        mDirEntries = new ArrayList<>();
-        mAudioFile = new ArrayList<>();
-        mImageFile = new ArrayList<>();
-        mVideoFile = new ArrayList<>();
-        mApkFile = new ArrayList<>();
+        mDirEntries = new ArrayList<FileInfo>();
+        mAudioFile = new ArrayList<FileInfo>();
+        mImageFile = new ArrayList<FileInfo>();
+        mVideoFile = new ArrayList<FileInfo>();
+        mApkFile = new ArrayList<FileInfo>();
 
         File [] fileList = dir.listFiles();
         Log.d(LOGTAG,"loadfiles, filelist length is " + fileList.length);

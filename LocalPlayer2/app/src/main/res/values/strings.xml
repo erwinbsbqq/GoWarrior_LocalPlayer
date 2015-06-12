@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">LocalPlayer2</string>
+    <string name="audio_player_name">Music Player</string>
+    <string name="video_player_name">Video Player</string>
+    <string name="image_player_name">Picture Viewer</string>
+
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -25,8 +29,40 @@
     <string name="menu_key_to_tab">"Press [MENU] to enter category"</string>
     <string name="loading_dir">"Loading"</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
     <string name="connect_tip">\"Please connect to external storage device\"</string>
     <string name="value_name">name</string>
+    <string name="value_source_name">Source Name</string>
+    <string name="value_timefmt">hh:mm/HH:MM</string>
+    <string name="title_activity_local_image_player">LocalImagePlayer</string>
+    <string name="value_blank" />
+    <string name="msg_media_unsupported">Media Unsupported</string>
+
+    <string name="order_sequence">Sequence</string>
+    <string name="order_all">All</string>
+    <string name="order_single">Single</string>
+    <string name="order_random">Random</string>
+
+    <string name="channel_stereo">Stereo</string>
+    <string name="channel_left">Left</string>
+    <string name="channel_right">Right</string>
+
+    <string name="ratio_auto">Auto</string>
+    <string name="ratio_standard">Standard</string>
+    <string name="ratio_fullscreen">Full Screen</string>
+
+    <string name="sort_type">Sort Type</string>
+    <string name="subtitle">Subtitle</string>
+    <string name="track">Track</string>
+    <string name="play_order">Play Order</string>
+    <string name="audio_channel">Audio Channel</string>
+    <string name="aspect_ratio">Aspect Ratio</string>
+    <string name="brightness">Brightness</string>
+    <string name="contrast">Contrast</string>
+    <string name="saturation">Saturation</string>
+
+    <string name="close">Close</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

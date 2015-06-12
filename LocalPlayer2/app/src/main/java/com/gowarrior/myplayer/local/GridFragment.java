@@ -136,6 +136,8 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
                     mChildName = "";
 
                     mFileHelper.loadDir(fileInfo.path, GridFragment.this);
+                }else {
+                    startPlayerActivity(position);
                 }
 
 
@@ -538,17 +540,50 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
 
 
 
+
+
     }
 
+    private void startPlayerActivity(int position) {
+        ArrayList<String> playlist = new ArrayList<String>();
+        File currentFile = new File(mFileHelper.getCurrentPath());
+        ArrayList<FileInfo> fileList = mFileHelper.getDirInfo(currentFile.getAbsolutePath(), mFileType);
+
+        if (fileList == null) {
+            return;
+        }
+        int index = 0;
+        int count = 0;
+
+        for (int i = 0; i < fileList.size(); i++) {
+            FileInfo fileInfo = fileList.get(i);
+
+            if (i == position) {
+                index = count;
+            }
+            count++;
+            playlist.add(fileInfo.name);
+        }
+
+        Class<?> cls = null;
+        switch (mFileType) {
+            case IMAGE:
+                cls = LocalImagePlayer.class;
+                break;
+            default:
+                return;
+        }
+
+        Intent intent = new Intent(getActivity(), cls);
+        intent.putExtra("path", mFileHelper.getCurrentPath());
+        intent.putExtra("start_index", index);
+
+        mFileHelper.playlist = playlist;
+
+        startActivity(intent);
 
 
-
-
-
-
-
-
-
+    }
 
 
 
