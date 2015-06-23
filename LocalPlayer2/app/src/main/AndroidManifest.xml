@@ -17,6 +17,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".local.LocalVideoPlayer"
+            android:label="@string/video_player_name"
+            android:screenOrientation="landscape" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="video/*" >
+                </data>
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".local.LocalImagePlayer"
             android:label="@string/image_player_name"

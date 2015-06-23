@@ -571,6 +571,9 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
             case IMAGE:
                 cls = LocalImagePlayer.class;
                 break;
+            case VIDEO:
+                cls = LocalVideoPlayer.class;
+                break;
             default:
                 return;
         }

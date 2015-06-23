@@ -272,8 +272,8 @@ public class MediaPlayerActivity extends Activity implements
         mController.setAnchorView((RelativeLayout) findViewById(R.id.playbar_container));
 
         mPause = (ImageView) findViewById(R.id.player_pause);
-        //TODO
-        //mSubtitle = (TextView) this.findViewById(R.id.subtitle);
+
+        mSubtitle = (TextView) this.findViewById(R.id.subtitle);
 
         mDisplay = getWindowManager().getDefaultDisplay();
         //mVolumeBar = new VolumeBar(this);
