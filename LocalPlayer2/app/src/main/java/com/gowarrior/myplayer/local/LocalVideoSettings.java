@@ -22,9 +22,12 @@ import com.gowarrior.myplayer.R;
 import com.gowarrior.myplayer.common.MediaPlayerActivity;
 import com.gowarrior.myplayer.common.OptionSettingsAdapter;
 import com.gowarrior.myplayer.common.PlayerWidget;
+import com.nmp.service.NmpServiceApi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+//import com.nmp.service.NmpServiceApi;
 
 public class LocalVideoSettings extends PlayerWidget {
     private String LOGTAG = "LocalVideoSettings";
@@ -602,21 +605,21 @@ public class LocalVideoSettings extends PlayerWidget {
         // } else if (itemKey == "play_order") {
         // }
 
-        //TODO import nmpserviceapi
-        if (itemKey == "snd_channel") {
-            // mAliSettings.setStereoMode(itemValue);
-           // NmpServiceApi.setStereoMode(itemValue);
-        } else if (itemKey == "aspect_ratio") {
+
+        if (itemKey.equals("snd_channel")) {
+             mAliSettings.setStereoMode(itemValue);
+            NmpServiceApi.setStereoMode(itemValue);
+        } else if (itemKey.equals("aspect_ratio") ) {
             mActivity.changeAspectRatio(itemValue);
-        } else if (itemKey == "brightness") {
-            // mAliSettings.setBrightness(AliSettings.DISPLAY_VIDEO, itemValue);
-          //  NmpServiceApi.setBrightness(AliSettings.DISPLAY_VIDEO, itemValue);
-        } else if (itemKey == "contrast") {
-            // mAliSettings.setContrast(AliSettings.DISPLAY_VIDEO, itemValue);
-           // NmpServiceApi.setContrast(AliSettings.DISPLAY_VIDEO, itemValue);
-        } else if (itemKey == "saturation") {
-            // mAliSettings.setSaturation(AliSettings.DISPLAY_VIDEO, itemValue);
-           // NmpServiceApi.setSaturation(AliSettings.DISPLAY_VIDEO, itemValue);
+        } else if (itemKey.equals("brightness") ) {
+             mAliSettings.setBrightness(AliSettings.DISPLAY_VIDEO, itemValue);
+            NmpServiceApi.setBrightness(AliSettings.DISPLAY_VIDEO, itemValue);
+        } else if (itemKey.equals("contrast")) {
+             mAliSettings.setContrast(AliSettings.DISPLAY_VIDEO, itemValue);
+            NmpServiceApi.setContrast(AliSettings.DISPLAY_VIDEO, itemValue);
+        } else if (itemKey.equals("saturation")) {
+             mAliSettings.setSaturation(AliSettings.DISPLAY_VIDEO, itemValue);
+            NmpServiceApi.setSaturation(AliSettings.DISPLAY_VIDEO, itemValue);
         }
 
         String itemName = opts.valueAt(optIndex);

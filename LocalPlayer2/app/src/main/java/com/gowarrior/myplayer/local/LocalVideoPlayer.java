@@ -23,9 +23,9 @@ import android.widget.TextView;
 import com.gowarrior.myplayer.R;
 import com.gowarrior.myplayer.common.AbsMediaPlayer;
 import com.gowarrior.myplayer.common.MediaPlayerActivity;
-
 import com.gowarrior.myplayer.local.LocalVideoSettings.onItemKeyDownListener;
 import com.gowarrior.myplayer.local.LocalVideoSettings.onOptionSelectedListener;
+import com.nmp.support.Utility;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -98,8 +98,8 @@ public class LocalVideoPlayer extends MediaPlayerActivity implements
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        //TODO
-        //Utility.getInstance().init(this);
+
+        Utility.getInstance().init(this);
         mFileHelper = FileHelper.getInstance(this);
 
         Intent intent = getIntent();
