@@ -45,6 +45,20 @@
                 </data>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".local.LocalAudioPlayer"
+            android:label="@string/audio_player_name"
+            android:screenOrientation="landscape" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="audio/*" >
+                </data>
+            </intent-filter>
+        </activity>
     </application>
+
 
 </manifest>

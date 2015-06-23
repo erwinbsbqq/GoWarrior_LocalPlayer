@@ -2,10 +2,12 @@ package com.gowarrior.myplayer.local;
 
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -574,6 +576,12 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
             case VIDEO:
                 cls = LocalVideoPlayer.class;
                 break;
+            case AUDIO:
+                cls = LocalAudioPlayer.class;
+                break;
+            case APK:
+                installApk(this.getActivity(), fileList.get(position).path);
+                return;
             default:
                 return;
         }
@@ -587,6 +595,35 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
         startActivity(intent);
 
 
+    }
+
+    public static void installApk(Context context, String fileName) {
+
+        boolean top = true;
+        try{
+            ActivityManager activityManager=(ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            String runningActivity=activityManager.getRunningTasks(1).get(0).topActivity.getClassName();
+
+            if(-1 == runningActivity.indexOf("local.FileBrowser")) {
+                Log.d("performItemClick", "####mContext=" + context  +" ,itopactivit=" + runningActivity);
+                top = false;
+            }
+        }
+        catch (Exception e) {
+            Log.d("performItemClick","####try fail:" + e.toString());
+        }
+
+        if(!top) {
+            Log.d("installApk","####top activity isn't FileBrower,skip it!!");
+            return;
+        }
+
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setDataAndType(Uri.parse("file://" + fileName),
+                "application/vnd.android.package-archive");
+        context.startActivity(intent);
     }
 
 

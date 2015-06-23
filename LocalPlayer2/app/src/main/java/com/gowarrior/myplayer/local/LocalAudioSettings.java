@@ -22,15 +22,12 @@ import com.gowarrior.myplayer.R;
 import com.gowarrior.myplayer.common.MediaPlayerActivity;
 import com.gowarrior.myplayer.common.OptionSettingsAdapter;
 import com.gowarrior.myplayer.common.PlayerWidget;
-import com.nmp.service.NmpServiceApi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
-
-public class LocalVideoSettings extends PlayerWidget {
-    private String LOGTAG = "LocalVideoSettings";
+public class LocalAudioSettings extends PlayerWidget {
+    private String LOGTAG = "LocalAudioSettings";
     private ListView mOptionList;
     private ImageView mArrowTipsUp;
     private ImageView mArrowTipsDown;
@@ -45,7 +42,7 @@ public class LocalVideoSettings extends PlayerWidget {
     private AliSettings mAliSettings;
 
     private int mCurrentSelectItem = 0;
-    private final int VISIBLE_ITEM_NUM = 3;
+    private final int VISIBLE_ITEM_NUM = 1;
 
     private onItemKeyDownListener mListener = null;
     private onOptionSelectedListener mOnOptionSelectedListener = null;
@@ -162,7 +159,7 @@ public class LocalVideoSettings extends PlayerWidget {
                                      String name);
     }
 
-    public LocalVideoSettings(Context context, ViewGroup root) {
+    public LocalAudioSettings(Context context, ViewGroup root) {
         // TODO Auto-generated constructor stub
         mActivity = (MediaPlayerActivity) context;
         View.inflate(context, R.layout.option_settings, root);
@@ -259,7 +256,7 @@ public class LocalVideoSettings extends PlayerWidget {
     }
 
     private void initMenu(Context context) {
-        Resources resource = context.getResources();
+        Resources resource = ((Context)mActivity).getResources();
 
         mSubtitleOpts = new SparseArray<String>();
         mTrackOpts = new SparseArray<String>();
@@ -406,11 +403,11 @@ public class LocalVideoSettings extends PlayerWidget {
 
         mMenu = new ArrayList<NmpMenuItem>();
         mMenu.add(mPlayOrderMI);
-        mMenu.add(mChannelMI);
-        mMenu.add(mAspectRatioMI);
-        mMenu.add(mBrightnessMI);
-        mMenu.add(mContrastMI);
-        mMenu.add(mSaturationMI);
+        // mMenu.add(mChannelMI);
+        // mMenu.add(mAspectRatioMI);
+        // mMenu.add(mBrightnessMI);
+        // mMenu.add(mContrastMI);
+        // mMenu.add(mSaturationMI);
 
         updateViewData();
     }
@@ -526,11 +523,11 @@ public class LocalVideoSettings extends PlayerWidget {
             }
             mSubtitleOpts.clear();
         }
-        mSubtitleOpts.append(0, resource.getString(R.string.close));
-        for (int i = 1; i < totalNumber+1; i++) {
+        mSubtitleOpts.append(-1, resource.getString(R.string.close));
+        for (int i = 0; i < totalNumber; i++) {
             mSubtitleOpts.append(i,
                     String.valueOf(resource.getString(R.string.subtitle))
-                            + String.valueOf(i));
+                            + String.valueOf(i + 1));
         }
         updateViewData();
         mOptionSettingsAdapter.notifyDataSetChanged();
@@ -605,21 +602,16 @@ public class LocalVideoSettings extends PlayerWidget {
         // } else if (itemKey == "play_order") {
         // }
 
-
-        if (itemKey.equals("snd_channel")) {
-             mAliSettings.setStereoMode(itemValue);
-            NmpServiceApi.setStereoMode(itemValue);
-        } else if (itemKey.equals("aspect_ratio") ) {
+        if (itemKey == "snd_channel") {
+            mAliSettings.setStereoMode(itemValue);
+        } else if (itemKey == "aspect_ratio") {
             mActivity.changeAspectRatio(itemValue);
-        } else if (itemKey.equals("brightness") ) {
-             mAliSettings.setBrightness(AliSettings.DISPLAY_VIDEO, itemValue);
-            NmpServiceApi.setBrightness(AliSettings.DISPLAY_VIDEO, itemValue);
-        } else if (itemKey.equals("contrast")) {
-             mAliSettings.setContrast(AliSettings.DISPLAY_VIDEO, itemValue);
-            NmpServiceApi.setContrast(AliSettings.DISPLAY_VIDEO, itemValue);
-        } else if (itemKey.equals("saturation")) {
-             mAliSettings.setSaturation(AliSettings.DISPLAY_VIDEO, itemValue);
-            NmpServiceApi.setSaturation(AliSettings.DISPLAY_VIDEO, itemValue);
+        } else if (itemKey == "brightness") {
+            mAliSettings.setBrightness(AliSettings.DISPLAY_VIDEO, itemValue);
+        } else if (itemKey == "contrast") {
+            mAliSettings.setContrast(AliSettings.DISPLAY_VIDEO, itemValue);
+        } else if (itemKey == "saturation") {
+            mAliSettings.setSaturation(AliSettings.DISPLAY_VIDEO, itemValue);
         }
 
         String itemName = opts.valueAt(optIndex);

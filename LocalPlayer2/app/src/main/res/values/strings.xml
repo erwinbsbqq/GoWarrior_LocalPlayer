@@ -66,4 +66,7 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
+    <string name="next_song">"Next one"</string>
+    <string name="audio_operation_tip">"[LEFT] previous,[RIGHT] next,[ENTER] pause/play,[MENU] switch mode"</string>
+
 </resources>
