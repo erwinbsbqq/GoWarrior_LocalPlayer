@@ -91,18 +91,22 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
             case 0:
                 mFileType = FileHelper.FILETYPE.IMAGE;
                 rootView=inflater.inflate(R.layout.fragment_blank, container, false);
+
                 break;
             case 1:
                 mFileType = FileHelper.FILETYPE.VIDEO;
                 rootView=inflater.inflate(R.layout.fragment_blank, container, false);
+
                 break;
             case 2:
                 mFileType = FileHelper.FILETYPE.AUDIO;
                 rootView=inflater.inflate(R.layout.fragment_blank, container, false);
+
                 break;
             case 3:
                 mFileType = FileHelper.FILETYPE.APK;
                 rootView=inflater.inflate(R.layout.fragment_blank, container, false);
+
                 break;
             default:
                 return null;
@@ -129,7 +133,7 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
 
                 Object obj = gridView.getItemAtPosition(position);
                 if (obj == null) {
-                    Log.d(LOGTAG,"obj is null");
+                    Log.d(LOGTAG, "obj is null");
                     return;
                 }
                 FileInfo fileInfo = (FileInfo) obj;
@@ -139,10 +143,9 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
                     mChildName = "";
 
                     mFileHelper.loadDir(fileInfo.path, GridFragment.this);
-                }else {
+                } else {
                     startPlayerActivity(position);
                 }
-
 
 
             }
@@ -170,16 +173,17 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
         });
 
         gridView.setOnKeyListener(new View.OnKeyListener() {
+
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 
+
+                Boolean ret = false;
                 String currentPath = mFileHelper.getCurrentPath();
                 if (currentPath == null || currentPath.isEmpty()) {
                     return false;
                 }
-
-                    File currentFile = new File(mFileHelper.getCurrentPath());
-
+                File currentFile = new File(mFileHelper.getCurrentPath());
                 switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_BACK:
                         if (FileHelper.isRootDir(mFileHelper.getCurrentPath())) {
@@ -192,27 +196,26 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
                             mTipView.setText(R.string.loading_dir);
 
                             //when back to /storage/ext, back to /storage direct for pair with enter action
-                            //b暂时挪过来的一段代码
-                            if (currentFile.getParentFile().getAbsolutePath().equals("/storage/ext")) {
+                            if(currentFile.getParentFile().getAbsolutePath().equals("/storage/ext")) {
                                 mFileHelper.setCurrentPath("/storage/ext");
                                 currentFile = new File(mFileHelper.getCurrentPath());
                             }
-                            //e暂时挪过来的一段代码
 
                             mChildName = currentFile.getName();
-
-                            mFileHelper.loadDir(currentFile.getParentFile().getAbsolutePath(), GridFragment.this);
+                            mFileHelper.loadDir(currentFile.getParentFile()
+                                    .getAbsolutePath(), GridFragment.this);
                         }
                         return true;
                     case KeyEvent.KEYCODE_DPAD_UP:
-                        if (gridView.getSelectedItemPosition() < gridView.getNumColumns()) {
-
-                                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                                    if (!mIsLoading) {
-                                        mFragmentListener.focusTabs();
-                                    }
+                        if (gridView.getSelectedItemPosition() < gridView
+                                .getNumColumns()) {
+                            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                                // Log.v(LOGTAG, LogTag.getMethodLine() +
+                                // "KEYCODE_DPAD_UP");
+                                if (!mIsLoading) {
+                                    mFragmentListener.focusTabs();
                                 }
-
+                            }
                             return true;
                         } else {
                             return false;
@@ -220,28 +223,31 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
                     case KeyEvent.KEYCODE_DPAD_DOWN:
                         return false;
                     case KeyEvent.KEYCODE_DPAD_LEFT:
-                        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                        if (event.getAction() == KeyEvent.ACTION_UP) {
                             return true;
                         }
-                        gridView.onKeyDown(keyCode, event);
-
-                        if (gridView.getSelectedItemPosition() > 0 && gridView.getCount() > 1) {
-                            Log.d(LOGTAG,"gridView.setselection before left possion is" + gridView.getSelectedItemPosition()) ;
-                            gridView.setSelection(gridView.getSelectedItemPosition() - 1);
-                            Log.d(LOGTAG,"gridView.setselection left possion is" + (gridView.getSelectedItemPosition() -1)) ;
+                        ret = gridView.onKeyDown(keyCode, event);
+                        if (ret) {
+                            return true;
+                        }
+                        if (gridView.getSelectedItemPosition() > 0
+                                && gridView.getCount() > 1) {
+                            gridView.setSelection(gridView
+                                    .getSelectedItemPosition() - 1);
                         }
                         return true;
-
                     case KeyEvent.KEYCODE_DPAD_RIGHT:
-
-                        //换成KeyEvent.ACTION_UP会跳格
-                        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                        if (event.getAction() == KeyEvent.ACTION_UP) {
                             return true;
                         }
-                        gridView.onKeyDown(keyCode,event);
-                        if ((gridView.getSelectedItemPosition() < (gridView.getCount() - 1)) && (gridView.getCount() > 1)) {
-                            gridView.setSelection(gridView.getSelectedItemPosition() + 1);
-                            Log.d(LOGTAG, "gridView.setselection possion right is" + (gridView.getSelectedItemPosition()+1) ) ;
+                        ret = gridView.onKeyDown(keyCode, event);
+                        if (ret) {
+                            return true;
+                        }
+                        if (gridView.getSelectedItemPosition() < gridView
+                                .getCount() - 1 && gridView.getCount() > 1) {
+                            gridView.setSelection(gridView
+                                    .getSelectedItemPosition() + 1);
                         }
                         return true;
                     default:
@@ -279,16 +285,16 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
                     mFileHelper.loadDir(currentFile.getParentFile().getAbsolutePath(), GridFragment.this);
 
                     gridView.requestFocus();
-                return  true;
-                }else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+                    return true;
+                } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
                     if (event.getAction() == KeyEvent.ACTION_DOWN) {
                         mFragmentListener.focusTabs();
                     }
-                    return  true;
-                }else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT
+                    return true;
+                } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT
                         || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
                     return true;
-            }
+                }
 
                 return false;
             }
@@ -307,6 +313,7 @@ public class GridFragment extends Fragment implements OnDirLoadedListener {
 
             }
         }
+
 
         return rootView;
     }
