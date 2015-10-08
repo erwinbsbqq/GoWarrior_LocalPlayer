@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    
+    <FrameLayout
+        android:id="@+id/local_gridView_tip"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_margin="0dp"
+        android:background="#00000000"
+        android:paddingTop="0px">
+        
+        <TextView
+            android:id="@+id/current_dir"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="start"
+            android:singleLine="true"
+            android:layout_gravity="left|center_vertical"
+            android:textSize="22sp"
+            android:layout_marginLeft="60dp"
+            android:textColor="@color/text_wihle_translucence"
+            android:text="@string/value_path"
+            />
+
+        <TextView
+            android:id="@+id/tip_menu_key"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/value_bymenu"
+            android:textColor="@color/text_wihle_translucence"
+            android:textSize="@dimen/text_size_s" />
+
+        <TextView
+            android:id="@+id/page_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="120dp"
+            android:text="@string/value_zero"
+            android:textColor="@color/text_wihle_translucence"
+            android:textSize="@dimen/text_size_s" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="552dp"
+        android:background="#00000000"
+        android:padding="0px" >
+
+        <TextView
+            android:id="@+id/empty_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:text="@string/no_content"
+            android:textSize="@dimen/text_size_xxl"
+            android:visibility="gone" />
+
+        <GridView
+            android:id="@+id/local_filebrowser_gridView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="#00000000"
+            android:columnWidth="266dp"
+            android:horizontalSpacing="2dp"
+            android:listSelector="@drawable/local_gridview_selector"
+            android:numColumns="auto_fit"
+            android:scrollbars="none"
+            android:stretchMode="spacingWidthUniform"
+            android:verticalSpacing="34dp"
+            >
+        </GridView>
+    </FrameLayout>
+    
+</LinearLayout>
+
